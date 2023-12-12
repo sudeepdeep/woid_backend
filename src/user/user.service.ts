@@ -16,8 +16,15 @@ export class UserService {
     if (existingUser) {
       throw new UnprocessableEntityException('user already exists');
     }
-
     return await this.model.create(data);
+  }
+
+  async getUser(id: string) {
+    const user = await this.model.findOne({ _id: id });
+    if (!user) {
+      throw new UnprocessableEntityException('User not found');
+    }
+    return user;
   }
 
   async getUsers() {

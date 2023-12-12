@@ -9,6 +9,10 @@ import { UserModule } from './user/user.module';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
 import { AuthModule } from './auth/auth.module';
+import { PostController } from './post/post.controller';
+import { PostService } from './post/post.service';
+import { PostModule } from './post/post.module';
+import { Post, PostSchema } from './schema/post.schema';
 
 @Module({
   imports: [
@@ -16,11 +20,15 @@ import { AuthModule } from './auth/auth.module';
     MongooseModule.forRoot(mongoCredentials().MONGO_URI, {
       autoIndex: true,
     }),
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Post.name, schema: PostSchema },
+    ]),
     UserModule,
     AuthModule,
+    PostModule,
   ],
-  controllers: [AppController, UserController],
-  providers: [AppService, UserService],
+  controllers: [AppController, UserController, PostController],
+  providers: [AppService, UserService, PostService],
 })
 export class AppModule {}
