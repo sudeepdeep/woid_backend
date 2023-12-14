@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -26,11 +27,16 @@ export class PostController {
 
   @Post(':id/upload')
   @UseInterceptors(FileInterceptor('file'))
-  feedUpload(
+  async feedUpload(
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: string,
   ) {
-    return this.service.uploadImage(file, id);
+    const fileUrl = await this.service.uploadImage(file, id);
+    return {
+      success: true,
+      id,
+      fileUrl,
+    };
   }
 
   @Post(':postId/like-post')
@@ -49,7 +55,17 @@ export class PostController {
   }
 
   @Post(':postId/delete-comment')
-  deleteComment(@Param('postId') postId: string, body: any) {
+  deleteComment(@Param('postId') postId: string, @Body() body: any) {
     return this.service.delteCommentPost(postId, body);
+  }
+
+  @Put(':postId/update')
+  updatePost(@Param('postId') postId: string, @Body() body: any) {
+    return this.service.updatePost(postId, body);
+  }
+
+  @Post(':postId/delete-post')
+  deletePost(@Param('postId') postId: string) {
+    return this.service.deletePost(postId);
   }
 }

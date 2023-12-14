@@ -6,11 +6,14 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto, UpdateUserDto } from './dtos/user.dto';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('user')
 export class UserController {
@@ -18,6 +21,15 @@ export class UserController {
   @Post()
   async createUser(@Body() data: CreateUserDto) {
     return await this.userService.createUser(data);
+  }
+
+  @Post(':id/upload-profile')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadProfile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string,
+  ) {
+    return await this.userService.uploadProfilePicture(id, file);
   }
 
   @UseGuards(AuthGuard)

@@ -16,7 +16,7 @@ import { Post, PostSchema } from './schema/post.schema';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ cache: true }),
     MongooseModule.forRoot(mongoCredentials().MONGO_URI, {
       autoIndex: true,
     }),

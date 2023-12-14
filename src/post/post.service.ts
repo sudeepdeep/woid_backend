@@ -3,7 +3,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post } from 'src/schema/post.schema';
 import { User } from 'src/schema/user.schema';
-import { groupBy } from 'lodash';
+import { groupBy, flatten } from 'lodash';
+import * as admin from 'firebase-admin';
+
 @Injectable()
 export class PostService {
   constructor(
@@ -36,7 +38,7 @@ export class PostService {
       }),
     );
 
-    return postData[0];
+    return flatten(postData);
   }
 
   async uploadPost(body: any) {
@@ -110,27 +112,52 @@ export class PostService {
     return post;
   }
 
+  async updatePost(postId: string, body: any) {
+    const post = await this.model.findById(postId);
+    await this.model.findByIdAndUpdate(
+      { _id: post.id },
+      { images: body.images },
+    );
+  }
+
+  async deletePost(postId: string) {
+    const post = await this.model.findById(postId);
+    if (!post) {
+      throw new UnprocessableEntityException('post not found');
+    }
+    await this.model.deleteOne({ _id: postId });
+  }
+
   async uploadImage(file: Express.Multer.File, id: string) {
-    console.log(id, file);
-    // const formData = new FormData();
-    // const blob = new Blob([file.buffer], { type: file.mimetype });
-    // formData.append('upload', blob, file.originalname);
+    const bucket = admin.storage().bucket();
+    const destination = `profiles/${id}/${file.originalname}`;
 
-    // const headers = {
-    //   'api-key': 'nmxDcStIflZOh4zHMFhPJC9YbZiWxXmW',
-    //   'Content-Type': 'multipart/form-data',
-    // };
+    const fileUpload = bucket.file(destination);
+    const stream = fileUpload.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
 
-    // const config = {
-    //   headers: headers,
-    // };
+    return new Promise<string>((resolve, reject) => {
+      stream.on('error', (err) => {
+        console.error('Error uploading to Firebase Storage:', err);
+        reject('Error uploading to Firebase Storage');
+      });
 
-    // return axios
-    //   .post('https://api.apilayer.com/image_upload/upload', formData, config)
-    //   .then((res) => res.data)
-    //   .catch((err) => {
-    //     console.log(err);
-    //     throw err;
-    //   });
+      stream.on('finish', async () => {
+        // Generate a signed URL for the file
+        const [url] = await fileUpload.getSignedUrl({
+          action: 'read',
+          expires: '01-01-3000', // Adjust the expiration date as needed
+        });
+
+        console.log('Upload to Firebase Storage successful');
+        resolve(url);
+      });
+
+      // Write the buffer to the stream
+      stream.end(file.buffer);
+    });
   }
 }

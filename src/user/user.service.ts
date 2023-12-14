@@ -27,6 +27,10 @@ export class UserService {
     return user;
   }
 
+  async uploadProfilePicture(id, file) {
+    console.log(id, file);
+  }
+
   async getUsers() {
     return await this.model.find();
   }

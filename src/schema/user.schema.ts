@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Schema as MongooseSchema } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 
 @Schema()
@@ -17,6 +18,15 @@ export class User {
 
   @Prop()
   coverUrl: string;
+
+  @Prop()
+  userBio: string;
+
+  @Prop({ type: [MongooseSchema.Types.ObjectId], default: [] })
+  followers: string[];
+
+  @Prop({ type: [MongooseSchema.Types.ObjectId], default: [] })
+  following: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
