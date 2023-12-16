@@ -29,7 +29,12 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @Param('id') id: string,
   ) {
-    return await this.userService.uploadProfilePicture(id, file);
+    const fileUrl = await this.userService.uploadProfilePicture(file, id);
+    return {
+      success: true,
+      id,
+      fileUrl,
+    };
   }
 
   @UseGuards(AuthGuard)
@@ -42,6 +47,12 @@ export class UserController {
   @Get(':id')
   async getSingleUser(@Param('id') id: string) {
     return this.userService.getUser(id);
+  }
+
+  @Put(':userId/:friendId/un-follow')
+  async unfollowUser(@Param() param: any) {
+    console.log(param, 'asdasd');
+    return this.userService.unfollowUser(param);
   }
 
   @Put(':id')

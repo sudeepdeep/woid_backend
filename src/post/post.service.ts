@@ -13,8 +13,12 @@ export class PostService {
     @InjectModel(User.name) private readonly user: Model<User>,
   ) {}
 
-  async getAllPosts(id: string) {
-    const posts = await this.model.find().sort({ createdAt: -1 });
+  async getAllPosts(id: string, query: any) {
+    const posts = await this.model
+      .find()
+      .sort({ createdAt: -1 })
+      .limit(2 * query.page);
+    const currentUser = await this.user.findById(id);
     const postsMap = groupBy(posts, (v) => v.createdById);
     const postData = await Promise.all(
       Object.keys(postsMap).map(async (key) => {
@@ -26,12 +30,26 @@ export class PostService {
           if (post.likedBy.includes(id) == true) {
             liked = true;
           }
+          if (
+            query.type == 'following' &&
+            !currentUser.following.includes(post.createdById) &&
+            !post.createdById.equals(currentUser._id)
+          ) {
+            continue;
+          }
+
+          if (
+            query.type == 'my-posts' &&
+            !post.createdById.equals(currentUser._id)
+          ) {
+            continue;
+          }
+
           const data = {
             post,
             user,
             liked,
           };
-
           allPosts.push(data);
         }
         return allPosts;
@@ -130,7 +148,7 @@ export class PostService {
 
   async uploadImage(file: Express.Multer.File, id: string) {
     const bucket = admin.storage().bucket();
-    const destination = `profiles/${id}/${file.originalname}`;
+    const destination = `posts/${id}/${file.originalname}`;
 
     const fileUpload = bucket.file(destination);
     const stream = fileUpload.createWriteStream({

@@ -4,10 +4,15 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from 'src/schema/user.schema';
 import { Model } from 'mongoose';
 import { IUser } from './interface/user.interface';
+import { Post } from 'src/schema/post.schema';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private readonly model: Model<IUser>) {}
+  constructor(
+    @InjectModel(User.name) private readonly model: Model<IUser>,
+    @InjectModel(Post.name) private readonly postModel: Model<Post>,
+  ) {}
   async createUser(data: CreateUserDto) {
     const existingUser = await this.model.findOne({
       username: data.username,
@@ -24,21 +29,73 @@ export class UserService {
     if (!user) {
       throw new UnprocessableEntityException('User not found');
     }
-    return user;
+    const postsCount = await this.postModel
+      .find({ createdById: user._id })
+      .count();
+
+    const data = {
+      user,
+      postsCount: postsCount,
+    };
+
+    return data;
   }
 
-  async uploadProfilePicture(id, file) {
-    console.log(id, file);
+  async uploadProfilePicture(file, id) {
+    const bucket = admin.storage().bucket();
+    const destination = `profiles/${id}/${file.originalname}`;
+
+    const fileUpload = bucket.file(destination);
+    const stream = fileUpload.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+    });
+
+    return new Promise<string>((resolve, reject) => {
+      stream.on('error', (err) => {
+        console.error('Error uploading to Firebase Storage:', err);
+        reject('Error uploading to Firebase Storage');
+      });
+
+      stream.on('finish', async () => {
+        // Generate a signed URL for the file
+        const [url] = await fileUpload.getSignedUrl({
+          action: 'read',
+          expires: '01-01-3000', // Adjust the expiration date as needed
+        });
+
+        console.log('Upload to Firebase Storage successful');
+        resolve(url);
+      });
+
+      // Write the buffer to the stream
+      stream.end(file.buffer);
+    });
   }
 
   async getUsers() {
     return await this.model.find();
   }
 
+  async unfollowUser(data) {
+    await this.model.findByIdAndUpdate(
+      { _id: data.userId },
+      { $pull: { following: data.friendId } },
+    );
+  }
+
   async updateUser(props: { id: string; body: UpdateUserDto }) {
     const user = await this.model.findOne({ _id: props.id });
     if (!user) {
       throw new UnprocessableEntityException(`User Not Found`);
+    }
+
+    if (props.body.following) {
+      await this.model.findByIdAndUpdate(
+        { _id: props.body.following[0] },
+        { $push: { followers: user._id } },
+      );
     }
 
     await this.model.findByIdAndUpdate(props.id, props.body, { new: true });

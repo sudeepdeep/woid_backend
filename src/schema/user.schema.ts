@@ -20,7 +20,7 @@ export class User {
   coverUrl: string;
 
   @Prop()
-  userBio: string;
+  bio: string;
 
   @Prop({ type: [MongooseSchema.Types.ObjectId], default: [] })
   followers: string[];

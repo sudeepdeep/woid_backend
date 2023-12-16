@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
@@ -16,8 +17,8 @@ export class PostController {
   constructor(private readonly service: PostService) {}
 
   @Get(':id')
-  getAllPosts(@Param('id') id: string) {
-    return this.service.getAllPosts(id);
+  getAllPosts(@Param('id') id: string, @Query() query: any) {
+    return this.service.getAllPosts(id, query);
   }
 
   @Post('/upload-post')
