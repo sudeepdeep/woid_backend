@@ -14,12 +14,10 @@ export class PostService {
   ) {}
 
   async getAllPosts(id: string, query: any) {
-    const posts = await this.model
-      .find()
-      .sort({ createdAt: -1 })
-      .limit(2 * query.page);
+    const posts = await this.model.find().sort({ createdAt: -1 });
+    const pageItems = posts.slice(0, query.page * 2);
     const currentUser = await this.user.findById(id);
-    const postsMap = groupBy(posts, (v) => v.createdById);
+    const postsMap = groupBy(pageItems, (v) => v.createdById);
     const postData = await Promise.all(
       Object.keys(postsMap).map(async (key) => {
         const allPosts = [];

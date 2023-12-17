@@ -51,7 +51,6 @@ export class UserController {
 
   @Put(':userId/:friendId/un-follow')
   async unfollowUser(@Param() param: any) {
-    console.log(param, 'asdasd');
     return this.userService.unfollowUser(param);
   }
 

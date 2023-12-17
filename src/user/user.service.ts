@@ -83,6 +83,16 @@ export class UserService {
       { _id: data.userId },
       { $pull: { following: data.friendId } },
     );
+
+    await this.model.findByIdAndUpdate(
+      { _id: data.friendId },
+      { $pull: { followers: data.userId } },
+    );
+
+    return {
+      success: true,
+      msg: 'User unfollowed',
+    };
   }
 
   async updateUser(props: { id: string; body: UpdateUserDto }) {
