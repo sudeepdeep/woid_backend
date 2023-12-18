@@ -38,13 +38,13 @@ export class UserController {
   }
 
   @UseGuards(AuthGuard)
-  @Get()
-  async getAllUser() {
-    return this.userService.getUsers();
+  @Get(':id')
+  async getAllUser(@Param('id') id: string) {
+    return this.userService.getUsers(id);
   }
 
   @UseGuards(AuthGuard)
-  @Get(':id')
+  @Get(':id/my-profile')
   async getSingleUser(@Param('id') id: string) {
     return this.userService.getUser(id);
   }

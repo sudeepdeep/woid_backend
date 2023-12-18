@@ -15,9 +15,8 @@ export class PostService {
 
   async getAllPosts(id: string, query: any) {
     const posts = await this.model.find().sort({ createdAt: -1 });
-    const pageItems = posts.slice(0, query.page * 2);
     const currentUser = await this.user.findById(id);
-    const postsMap = groupBy(pageItems, (v) => v.createdById);
+    const postsMap = groupBy(posts, (v) => v.createdById);
     const postData = await Promise.all(
       Object.keys(postsMap).map(async (key) => {
         const allPosts = [];
@@ -54,7 +53,7 @@ export class PostService {
       }),
     );
 
-    return flatten(postData);
+    return flatten(postData).slice(0, query.page * 2);
   }
 
   async uploadPost(body: any) {

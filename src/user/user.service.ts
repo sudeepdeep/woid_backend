@@ -74,8 +74,21 @@ export class UserService {
     });
   }
 
-  async getUsers() {
-    return await this.model.find();
+  async getUsers(id) {
+    const users = await this.model.find({ _id: { $ne: id } });
+    const data = await Promise.all(
+      users.map(async (user) => {
+        const postsCount = await this.postModel
+          .find({ createdById: user._id })
+          .count();
+
+        return {
+          user,
+          postsCount: postsCount,
+        };
+      }),
+    );
+    return data.slice(0, 4);
   }
 
   async unfollowUser(data) {
