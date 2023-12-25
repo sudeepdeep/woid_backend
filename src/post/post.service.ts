@@ -53,7 +53,7 @@ export class PostService {
       }),
     );
 
-    return flatten(postData).slice(0, query.page * 2);
+    return flatten(postData).slice(0, query.page * 10);
   }
 
   async uploadPost(body: any) {
