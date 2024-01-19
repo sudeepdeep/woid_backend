@@ -13,6 +13,10 @@ import { PostController } from './post/post.controller';
 import { PostService } from './post/post.service';
 import { PostModule } from './post/post.module';
 import { Post, PostSchema } from './schema/post.schema';
+import { MessagesController } from './messages/messages.controller';
+import { MessagesService } from './messages/messages.service';
+import { Article, ArticleSchema } from './schema/article.schema';
+import { ArticleModule } from './article/article.module';
 
 @Module({
   imports: [
@@ -23,12 +27,19 @@ import { Post, PostSchema } from './schema/post.schema';
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Post.name, schema: PostSchema },
+      { name: Article.name, schema: ArticleSchema },
     ]),
     UserModule,
     AuthModule,
     PostModule,
+    ArticleModule,
   ],
-  controllers: [AppController, UserController, PostController],
-  providers: [AppService, UserService, PostService],
+  controllers: [
+    AppController,
+    UserController,
+    PostController,
+    MessagesController,
+  ],
+  providers: [AppService, UserService, PostService, MessagesService],
 })
 export class AppModule {}

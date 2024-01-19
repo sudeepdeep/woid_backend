@@ -27,6 +27,9 @@ export class User {
 
   @Prop({ type: [MongooseSchema.Types.ObjectId], default: [] })
   following: string[];
+
+  @Prop({ default: 'woid' })
+  applicationType: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
