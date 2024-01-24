@@ -24,6 +24,14 @@ export class UserService {
     return await this.model.create(data);
   }
 
+  async getUserByUsername(username: string) {
+    const user = await this.model.findOne({ username: username });
+    if (!user) {
+      throw new UnprocessableEntityException('User not found');
+    }
+    return user;
+  }
+
   async getUser(id: string) {
     const user = await this.model.findOne({ _id: id });
     if (!user) {

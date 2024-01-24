@@ -32,4 +32,8 @@ export class ArticleService {
   async getArticle(id: string) {
     return this.model.findOne({ _id: id });
   }
+
+  async getUserArticles(id: string) {
+    return this.model.find({ username: id });
+  }
 }

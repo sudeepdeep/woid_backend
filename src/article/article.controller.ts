@@ -18,4 +18,9 @@ export class ArticleController {
   async getArticle(@Param('id') id: string) {
     return this.service.getArticle(id);
   }
+
+  @Get('articles/:username')
+  async getUserArticles(@Param('username') id: string) {
+    return this.service.getUserArticles(id);
+  }
 }
