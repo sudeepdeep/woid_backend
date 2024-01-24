@@ -1,7 +1,19 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as MongooseSchema } from 'mongoose';
 
 @Schema()
-export class Article {
+export class Comment extends Document {
+  @Prop({ required: true })
+  username: string;
+
+  @Prop({ required: true })
+  commentText: string;
+}
+
+export const CommentSchema = SchemaFactory.createForClass(Comment);
+
+@Schema()
+export class Article extends Document {
   @Prop({ required: true })
   username: string;
 
@@ -43,6 +55,12 @@ export class Article {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({ type: [MongooseSchema.Types.ObjectId], default: [], ref: 'User' })
+  likedBy: string[];
+
+  @Prop({ type: [CommentSchema], default: [] })
+  comments: Comment[];
 }
 
 export const ArticleSchema = SchemaFactory.createForClass(Article);

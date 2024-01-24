@@ -23,4 +23,22 @@ export class ArticleController {
   async getUserArticles(@Param('username') id: string) {
     return this.service.getUserArticles(id);
   }
+
+  @Post('like-article/:articleId/:userId')
+  async likeArticle(@Param() param: any) {
+    return this.service.likeArticle(param);
+  }
+
+  @Post('dislike-article/:articleId/:userId')
+  async dislikeArticle(@Param() param: any) {
+    return this.service.dislikeArticle(param);
+  }
+
+  @Post('post-comment/:articleId')
+  async postComment(
+    @Param('articleId') articleId: string,
+    @Body() comment: any,
+  ) {
+    return this.service.postComment(articleId, comment);
+  }
 }
