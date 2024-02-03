@@ -49,7 +49,6 @@ export class UserController {
     return this.userService.getUser(id);
   }
 
-  @UseGuards(AuthGuard)
   @Get(':username/user-profile')
   async getByUsername(@Param('username') username: string) {
     return this.userService.getUserByUsername(username);
