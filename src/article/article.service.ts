@@ -13,7 +13,7 @@ export class ArticleService {
   }
 
   async getArticles(lat: any, long: any) {
-    const radius = 10;
+    const radius = 50;
     return this.model
       .find({
         coordinates: {
