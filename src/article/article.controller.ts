@@ -34,6 +34,11 @@ export class ArticleController {
     return this.service.dislikeArticle(param);
   }
 
+  @Post('delete-article/:articleId/:userId')
+  async deleteArticle(@Param() param: any) {
+    return this.service.deleteArticle(param);
+  }
+
   @Post('post-comment/:articleId')
   async postComment(
     @Param('articleId') articleId: string,

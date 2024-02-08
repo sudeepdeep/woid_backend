@@ -26,6 +26,7 @@ export class ArticleService {
           },
         },
       })
+      .sort({ createdAt: -1 })
       .exec();
   }
 
@@ -67,6 +68,22 @@ export class ArticleService {
       );
     }
     return article;
+  }
+
+  async deleteArticle(param: any) {
+    const article = await this.model.findOne({
+      _id: param.articleId,
+    });
+    if (!article) {
+      throw new UnprocessableEntityException('article not found');
+    }
+
+    await this.model.deleteOne({ _id: param.articleId });
+
+    return {
+      success: true,
+      msg: 'article deleted successfully',
+    };
   }
 
   async postComment(articleId: string, comment: any) {
