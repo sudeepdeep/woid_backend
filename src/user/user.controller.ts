@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -39,8 +40,8 @@ export class UserController {
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  async getAllUser(@Param('id') id: string) {
-    return this.userService.getUsers(id);
+  async getAllUser(@Param() param: any, @Query() query: any) {
+    return this.userService.getUsers(param, query);
   }
 
   @UseGuards(AuthGuard)

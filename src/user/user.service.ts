@@ -82,8 +82,11 @@ export class UserService {
     });
   }
 
-  async getUsers(id) {
-    const users = await this.model.find({ _id: { $ne: id } });
+  async getUsers(param, query) {
+    const users = await this.model.find({
+      _id: { $ne: param.id },
+      username: { $regex: query.search, $options: 'i' },
+    });
     const data = await Promise.all(
       users.map(async (user) => {
         const postsCount = await this.postModel
@@ -96,7 +99,7 @@ export class UserService {
         };
       }),
     );
-    return data.slice(0, 4);
+    return data;
   }
 
   async unfollowUser(data) {

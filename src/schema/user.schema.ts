@@ -47,3 +47,5 @@ UserSchema.pre('save', async function (next) {
     return next(err); // Pass the error to the next middleware or function
   }
 });
+
+UserSchema.index({ username: 'text' });

@@ -6,4 +6,5 @@ export interface IUser extends Document {
   readonly email: string;
   readonly profileUrl: string;
   readonly coverUrl: string;
+  readonly applicationType: string;
 }
