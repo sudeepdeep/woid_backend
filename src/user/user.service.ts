@@ -32,6 +32,20 @@ export class UserService {
     return user;
   }
 
+  async checkUsername(username: string) {
+    const user = await this.model.findOne({ username: username });
+    if (!user) {
+      return {
+        success: 'true',
+        msg: 'username available',
+      };
+    }
+    return {
+      success: 'false',
+      msg: 'username not available',
+    };
+  }
+
   async getUser(id: string) {
     const user = await this.model.findOne({ _id: id });
     if (!user) {

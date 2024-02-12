@@ -55,6 +55,11 @@ export class UserController {
     return this.userService.getUserByUsername(username);
   }
 
+  @Get(':username/check-username')
+  async checkUsername(@Param('username') username: string) {
+    return this.userService.checkUsername(username);
+  }
+
   @Put(':userId/:friendId/un-follow')
   async unfollowUser(@Param() param: any) {
     return this.userService.unfollowUser(param);
