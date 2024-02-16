@@ -1,6 +1,17 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Schema as MongooseSchema } from 'mongoose';
+import { Schema as MongooseSchema, Document } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
+
+@Schema()
+export class MessageId extends Document {
+  @Prop({ required: true })
+  userId: string;
+
+  @Prop({ required: true })
+  messageId: string;
+}
+
+export const MessageIdSchema = SchemaFactory.createForClass(MessageId);
 
 @Schema()
 export class User {
@@ -30,6 +41,9 @@ export class User {
 
   @Prop({ default: 'woid' })
   applicationType: string;
+
+  @Prop({ type: [MessageIdSchema], default: [] })
+  messageIds: MessageId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -63,6 +63,23 @@ export class UserService {
     return data;
   }
 
+  async checkUserMessageId({ userId, friendId }) {
+    const user = await this.model.findOne({ _id: userId });
+
+    if (user.messageIds.find((msg) => msg.userId == friendId)) {
+      const messageId = user.messageIds.find((msg) => msg.userId == friendId);
+      return messageId;
+    } else {
+      const messageBody = {
+        userId: friendId,
+        messageId: Math.floor(Math.random() * 10000),
+      };
+      user.messageIds.push(messageBody);
+      await user.save();
+      return messageBody;
+    }
+  }
+
   async uploadProfilePicture(file, id) {
     const bucket = admin.storage().bucket();
     const destination = `profiles/${id}/${file.originalname}`;

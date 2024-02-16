@@ -60,6 +60,11 @@ export class UserController {
     return this.userService.checkUsername(username);
   }
 
+  @Get(':userId/:friendId/check-message-id')
+  async checkMessageId(@Param() param: any) {
+    return this.userService.checkUserMessageId(param);
+  }
+
   @Put(':userId/:friendId/un-follow')
   async unfollowUser(@Param() param: any) {
     return this.userService.unfollowUser(param);

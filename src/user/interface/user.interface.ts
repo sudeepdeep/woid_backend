@@ -7,4 +7,5 @@ export interface IUser extends Document {
   readonly profileUrl: string;
   readonly coverUrl: string;
   readonly applicationType: string;
+  readonly messageIds: any[];
 }

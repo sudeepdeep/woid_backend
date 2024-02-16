@@ -13,10 +13,9 @@ import { PostController } from './post/post.controller';
 import { PostService } from './post/post.service';
 import { PostModule } from './post/post.module';
 import { Post, PostSchema } from './schema/post.schema';
-import { MessagesController } from './messages/messages.controller';
-import { MessagesService } from './messages/messages.service';
 import { Article, ArticleSchema } from './schema/article.schema';
 import { ArticleModule } from './article/article.module';
+import { MessagesGateway } from './messages.gateway';
 
 @Module({
   imports: [
@@ -34,12 +33,7 @@ import { ArticleModule } from './article/article.module';
     PostModule,
     ArticleModule,
   ],
-  controllers: [
-    AppController,
-    UserController,
-    PostController,
-    MessagesController,
-  ],
-  providers: [AppService, UserService, PostService, MessagesService],
+  controllers: [AppController, UserController, PostController],
+  providers: [AppService, UserService, PostService, MessagesGateway],
 })
 export class AppModule {}
