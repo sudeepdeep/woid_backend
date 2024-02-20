@@ -1,30 +1,28 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Schema as MongooseSchema } from 'mongoose';
+import { Document } from 'mongoose';
 
-export class Messages {
+export class Messages extends Document {
   @Prop({ required: true })
   text: string;
-  @Prop({ type: MongooseSchema.Types.ObjectId, required: true })
-  senderId: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, required: true })
-  receiverId: string;
+  @Prop({ required: true })
+  username: string;
 
-  @Prop()
-  createdAt: string;
-
-  @Prop()
+  @Prop({ default: false })
   viewed: boolean;
 }
 
-export const MessagesSchema = SchemaFactory.createForClass(Messages);
+export const MessagesSchema = SchemaFactory.createForClass(Messages).set(
+  'timestamps',
+  true,
+);
 
 @Schema()
-export class Message {
-  @Prop({ required: true, default: [], type: [MongooseSchema.Types.ObjectId] })
-  users: string[];
+export class Message extends Document {
+  @Prop({ required: true })
+  messageId: string;
 
-  @Prop({ type: [MessagesSchema], default: [] })
+  @Prop({ type: [MessagesSchema] })
   messages: Messages[];
 }
 

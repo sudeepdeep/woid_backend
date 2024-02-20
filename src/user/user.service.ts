@@ -6,12 +6,15 @@ import { Model } from 'mongoose';
 import { IUser } from './interface/user.interface';
 import { Post } from 'src/schema/post.schema';
 import * as admin from 'firebase-admin';
+import { Message, Messages } from 'src/schema/message.schema';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly model: Model<IUser>,
     @InjectModel(Post.name) private readonly postModel: Model<Post>,
+    @InjectModel(Message.name) private readonly messageModel: Model<Message>,
+    @InjectModel(Messages.name) private readonly messagesModel: Model<Messages>,
   ) {}
   async createUser(data: CreateUserDto) {
     const existingUser = await this.model.findOne({
@@ -63,10 +66,14 @@ export class UserService {
     return data;
   }
 
-  async checkUserMessageId({ userId, friendId }) {
+  async checkUserMessageId({ userId, friendId }): Promise<any> {
     const user = await this.model.findOne({ _id: userId });
+    const friend = await this.model.findOne({ _id: friendId });
 
-    if (user.messageIds.find((msg) => msg.userId == friendId)) {
+    if (
+      user.messageIds.find((msg) => msg.userId == friendId) &&
+      friend.messageIds.find((msg) => msg.userId == userId)
+    ) {
       const messageId = user.messageIds.find((msg) => msg.userId == friendId);
       return messageId;
     } else {
@@ -74,9 +81,21 @@ export class UserService {
         userId: friendId,
         messageId: Math.floor(Math.random() * 10000),
       };
+      const friendBody = {
+        userId: userId,
+        messageId: messageBody.messageId,
+      };
       user.messageIds.push(messageBody);
+      friend.messageIds.push(friendBody);
       await user.save();
-      return messageBody;
+      await friend.save();
+
+      const msgs = await this.messageModel.create({
+        messageId: messageBody.messageId,
+        messages: [],
+      });
+
+      return msgs;
     }
   }
 

@@ -15,7 +15,13 @@ import { PostModule } from './post/post.module';
 import { Post, PostSchema } from './schema/post.schema';
 import { Article, ArticleSchema } from './schema/article.schema';
 import { ArticleModule } from './article/article.module';
-import { MessagesGateway } from './messages.gateway';
+import { MessagesModule } from './messages/messages.module';
+import {
+  Message,
+  MessageSchema,
+  Messages,
+  MessagesSchema,
+} from './schema/message.schema';
 
 @Module({
   imports: [
@@ -27,13 +33,16 @@ import { MessagesGateway } from './messages.gateway';
       { name: User.name, schema: UserSchema },
       { name: Post.name, schema: PostSchema },
       { name: Article.name, schema: ArticleSchema },
+      { name: Message.name, schema: MessageSchema },
+      { name: Messages.name, schema: MessagesSchema },
     ]),
     UserModule,
     AuthModule,
     PostModule,
     ArticleModule,
+    MessagesModule,
   ],
   controllers: [AppController, UserController, PostController],
-  providers: [AppService, UserService, PostService, MessagesGateway],
+  providers: [AppService, UserService, PostService],
 })
 export class AppModule {}
