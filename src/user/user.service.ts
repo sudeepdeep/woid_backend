@@ -71,7 +71,7 @@ export class UserService {
     const friend = await this.model.findOne({ _id: friendId });
 
     if (
-      user.messageIds.find((msg) => msg.userId == friendId) &&
+      user?.messageIds.find((msg) => msg.userId == friendId) &&
       friend.messageIds.find((msg) => msg.userId == userId)
     ) {
       const messageId = user.messageIds.find((msg) => msg.userId == friendId);

@@ -5,7 +5,11 @@ export interface IUser extends Document {
   readonly password: string;
   readonly email: string;
   readonly profileUrl: string;
-  readonly coverUrl: string;
-  readonly applicationType: string;
-  readonly messageIds: any[];
+  readonly userType: string;
+  readonly tenantIds: any[];
+  readonly address: string;
+  readonly aadharNumber: string;
+  readonly phoneNumber: string;
+  readonly employeeId: string;
+  readonly messageIds: any;
 }

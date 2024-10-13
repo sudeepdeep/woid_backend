@@ -22,6 +22,10 @@ import {
   Messages,
   MessagesSchema,
 } from './schema/message.schema';
+import { UnilinksController } from './unilinks/unilinks.controller';
+import { UnilinksService } from './unilinks/unilinks.service';
+import { UnilinksModule } from './unilinks/unilinks.module';
+import { Unilinks, UnilinksSchema } from './schema/unilinks.schema';
 
 @Module({
   imports: [
@@ -35,14 +39,21 @@ import {
       { name: Article.name, schema: ArticleSchema },
       { name: Message.name, schema: MessageSchema },
       { name: Messages.name, schema: MessagesSchema },
+      { name: Unilinks.name, schema: UnilinksSchema },
     ]),
     UserModule,
     AuthModule,
     PostModule,
     ArticleModule,
     MessagesModule,
+    UnilinksModule,
   ],
-  controllers: [AppController, UserController, PostController],
-  providers: [AppService, UserService, PostService],
+  controllers: [
+    AppController,
+    UserController,
+    PostController,
+    UnilinksController,
+  ],
+  providers: [AppService, UserService, PostService, UnilinksService],
 })
 export class AppModule {}
