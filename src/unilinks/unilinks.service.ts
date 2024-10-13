@@ -68,6 +68,18 @@ export class UnilinksService {
     };
   }
 
+  async getUniLinksByUsername(username: any) {
+    const uniLink = await this.model.findOne({ username: username });
+    if (!uniLink) {
+      return { message: 'no user found', status: 202 };
+    }
+    return {
+      data: uniLink,
+      message: 'unlinks fetched successfully',
+      status: 200,
+    };
+  }
+
   async deleteUnilink(uniLinkId: any) {
     //check if the unilink exits
     const uniLink = await this.model.findById(uniLinkId);

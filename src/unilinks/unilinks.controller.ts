@@ -21,6 +21,11 @@ export class UnilinksController {
     return this.unilinks.getAllUnilinks();
   }
 
+  @Get(':username/get-by-username')
+  async getUnilinksByUsername(@Param('username') username: string) {
+    return await this.unilinks.getUniLinksByUsername(username);
+  }
+
   @UseGuards(AuthGuard)
   @Get(':id/get-links-by-id')
   async getUnlinkById(@Param('id') id: string) {
