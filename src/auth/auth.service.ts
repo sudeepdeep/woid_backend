@@ -32,4 +32,39 @@ export class AuthService {
       userId: user._id,
     };
   }
+
+  async handleGoogleSignIn(payload: any) {
+    const email = payload.email;
+    const user = await this.model.findOne({ email: email });
+
+    if (!user) {
+      //create an user
+      const data = {
+        email: email,
+        username: email.split('@')[0],
+        authSource: 'google',
+      };
+      try {
+        const userCreated = await this.model.create(data);
+        const tokenData = {
+          sub: userCreated._id,
+          username: userCreated.username,
+        };
+
+        return {
+          access_token: await this.jwtService.signAsync(tokenData),
+          userId: userCreated._id,
+        };
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      //login user
+      const tokenData = { sub: user._id, username: user.username };
+      return {
+        access_token: await this.jwtService.signAsync(tokenData),
+        userId: user._id,
+      };
+    }
+  }
 }

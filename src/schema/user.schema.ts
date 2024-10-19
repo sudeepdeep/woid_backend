@@ -39,11 +39,14 @@ export class User {
   @Prop({ type: [MongooseSchema.Types.ObjectId], default: [] })
   following: string[];
 
-  @Prop({ default: 'woid' })
+  @Prop({ default: 'unilinks' })
   applicationType: string;
 
   @Prop({ type: [MessageIdSchema], default: [] })
   messageIds: MessageId[];
+
+  @Prop({ default: 'self' })
+  authSource: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
