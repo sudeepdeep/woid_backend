@@ -52,7 +52,7 @@ export class UnilinksController {
 
   @UseGuards(AuthGuard)
   @Put(':id/update-link')
-  async updateUnlink(@Param('id') id: string, @Body() body: IUnilinks) {
+  async updateUnlink(@Param('id') id: string, @Body() body: any) {
     return await this.unilinks.updateUnilinks(id, body);
   }
 }
