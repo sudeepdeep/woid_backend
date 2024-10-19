@@ -105,6 +105,19 @@ export class UnilinksService {
     }
 
     const unLinks = await this.model.find({ userId: userId });
+    if (unLinks.length == 0) {
+      const data = [
+        {
+          username: user.username,
+          userId: user._id,
+        },
+      ];
+      return {
+        data: data,
+        message: 'unlinks fetched successfully',
+        status: 200,
+      };
+    }
     return {
       data: unLinks,
       message: 'unlinks fetched successfully',
