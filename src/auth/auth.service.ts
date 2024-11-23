@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 import { IUser } from 'src/user/interface/user.interface';
 import { User } from 'src/schema/user.schema';
 import { JwtService } from '@nestjs/jwt';
+import { CreateUserDto } from 'src/user/dtos/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +28,24 @@ export class AuthService {
     }
 
     const payload = { sub: user._id, username: user.username };
+    return {
+      access_token: await this.jwtService.signAsync(payload),
+      userId: user._id,
+    };
+  }
+
+  async signUp(body: CreateUserDto) {
+    const { username, email } = body;
+    let user = await this.model.findOne({ username: username, email: email });
+    if (user) {
+      throw new UnprocessableEntityException(
+        'User with the given username/email already exists',
+      );
+    }
+
+    //create user
+    user = await this.model.create(body);
+    const payload = { sub: user._id, username: username };
     return {
       access_token: await this.jwtService.signAsync(payload),
       userId: user._id,
