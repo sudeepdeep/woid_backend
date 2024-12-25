@@ -23,6 +23,9 @@ export class SocialMediaLink extends Document {
 
   @Prop()
   description: string;
+
+  @Prop({ default: '' })
+  customImage?: string;
 }
 
 export const LinkClickSchema = SchemaFactory.createForClass(LinkClick);
