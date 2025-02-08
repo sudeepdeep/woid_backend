@@ -11,6 +11,12 @@ export class LinkClick extends Document {
 }
 
 @Schema()
+export class Notes extends Document {
+  @Prop({ required: true })
+  shape: string;
+}
+
+@Schema()
 export class SocialMediaLink extends Document {
   @Prop()
   siteName: string;
@@ -60,6 +66,9 @@ export class Unilinks extends Document {
 
   @Prop({ default: [] })
   orderOfLinks: string[];
+
+  @Prop({ default: [] })
+  notes: Notes[];
 
   @Prop({ default: Date.now })
   createdAt: Date;
