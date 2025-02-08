@@ -12,4 +12,5 @@ export interface IUnilinks extends Document {
   readonly modifiedAt: string;
   readonly bannerUrl: string;
   readonly orderOfLinks: string;
+  readonly notes: any[];
 }
